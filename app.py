@@ -3,22 +3,25 @@ from flask_sqlalchemy import SQLAlchemy
 
 
 
+# create the extension
+db = SQLAlchemy()
+# create the app
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+# configure the SQLite database, relative to the app instance folder
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
+# initialize the app with the extension
+db.init_app(app)
 
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
+
 
 class Todo(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     title = db.Column(db.String(100))
     complete = db.Column(db.Boolean)
     
-
+with app.app_context():
+    db.create_all()
     
     
 
@@ -35,7 +38,7 @@ def index():
     #show all todos
     todo_list = Todo.query.all()
     print(todo_list)
-    return render_template("base.html",todo_list=todo_list)
+    return render_template("base2.html",todo_list=todo_list)
 
 if __name__ == "__main__":
     
